@@ -16,6 +16,9 @@ def web_testing(request):
     ##################################################
 
     query_test_info = TeacherTests.objects.get(id=request.session['test_id'])
+    student = StudTests.objects.get(test_id=request.session['test_id'])
+    show_attempt = query_test_info.attempt_count - student.attempts_count
+    print(show_attempt)
     query_questions = Questions.objects.filter(test_id_id=request.session['test_id']).all().order_by('?')
    
     if request.method == 'POST':
@@ -86,17 +89,18 @@ def web_testing(request):
             attempts.result = right_ans_counter
             attempts.save()
             update_best = StudTests.objects.get(pk=request.session['passed_test_id'])
-            update_best.best_result = max(update_best.best_result, right_ans_counter)
+            update_best.best_result = max(update_best.best_result, (right_ans_counter / test.question_count * 100))
             update_best.save()
             del request.session['test_id']
             del request.session['passed_test_id']
             del request.session['attempt_id']
-                        
+
         return redirect('/profile/')
 
     else:
         return render(request, 'start_test.html', {
-            'item': query_test_info
+            'item': query_test_info,
+            'student': show_attempt,
             })
 
 
