@@ -33,7 +33,7 @@ def attempt_result(request):
         'attempt_info': query_attempt_info, # Информация по попытке
         'res': int(query_attempt_info.result / query_test_info.question_count  * 100), # Результат
         'zipping': zip(query_questions, query_answers), # Вопросы и ответы
-        'user': query_user, # Данные о пользователе        
+        'reg_user': query_user, # Данные о пользователе        
     })
 
 def student_result(request):
@@ -49,8 +49,8 @@ def student_result(request):
             except:
                 pass
             try:
-                user = SignUp_Model.objects.get(pk=int(request.session['user_id']))
-                if user.user_type == 'stud':
+                reg_user = SignUp_Model.objects.get(pk=int(request.session['user_id']))
+                if reg_user.user_type == 'stud':
                     return redirect('/profile/') # Тут профиль
                 else:
                     return redirect('/test_result/') # Тут редирект на страницу статистики по тесту
@@ -79,7 +79,7 @@ def student_result(request):
     return render(request, 'student_result.html', {
         'test_info': query_test_info, # Общая информация по тесту
         'attempts': zip(query_attempt_info, res), # Информация по всем попыткам
-        'user': query_user,
+        'reg_user': query_user,
     })
 
 def test_result(request):
@@ -112,6 +112,6 @@ def test_result(request):
   
     return render(request, 'test_result.html', {
         'test_info': query_test_info, # Общая информация по тесту
-        'users': zip(query_user, tests), # Пользователи, проходившие этот тест
+        'reg_users': zip(query_user, tests), # Пользователи, проходившие этот тест
 
     })

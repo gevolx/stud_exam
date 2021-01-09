@@ -10,10 +10,10 @@ def profile(request):
 
     ##################################################
     # Изменить, указав соответствующие request
-    request.session['user_id'] = '1'
+    # request.session['user_id'] = '1'
     ##################################################
-    user = SignUp_Model.objects.get(pk=request.session['user_id'])
-    if user.user_type == 'teacher':
+    reg_user = SignUp_Model.objects.get(pk=request.session['user_id'])
+    if reg_user.user_type == 'teacher':
 
         if request.method == 'POST':
             if request.POST.get('test'):
@@ -45,7 +45,7 @@ def profile(request):
         query_tests = TeacherTests.objects.filter(user_id_id=request.session['user_id'])
 
         return render(request, 'teacher_profile.html', {
-            'user': query_user, # Инфа о тичере
+            'reg_user': query_user, # Инфа о тичере
             'tests': query_tests, # Инфа о тестах этого тичера  
         })
 
@@ -75,7 +75,7 @@ def profile(request):
                         attempt_info.append(Attempts.objects.filter(passed_test_id=test.id).order_by('date').last())
 
                     return render(request, 'stud_profile.html', {
-                        'user': query_user, # Инфа о студенте
+                        'reg_user': query_user, # Инфа о студенте
                         'tests': zip(query_tests, test_info, attempt_info), # Инфа о тестах студента
                         'error': error,
 
@@ -96,7 +96,7 @@ def profile(request):
 
             if request.POST.get("action", "") == "info":
                 request.session['test_id'] = request.POST.get("more_info")
-                request.session['student'] = user.id
+                request.session['student'] = reg_user.id
                 return redirect('/student_result/')
 
         query_user = SignUp_Model.objects.get(pk=request.session['user_id'])
@@ -108,7 +108,7 @@ def profile(request):
             attempt_info.append(Attempts.objects.filter(passed_test_id=test.id).order_by('date').last())
         
         return render(request, 'stud_profile.html', {
-            'user': query_user, # Инфа о студенте
+            'reg_user': query_user, # Инфа о студенте
             'tests': zip(query_tests, test_info, attempt_info), # Инфа о тестах студента
 
         })

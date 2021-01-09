@@ -42,7 +42,8 @@ def index(request):
 
 def logout_view(request):
     logout(request)
-    del request.session['user_id']
+    if 'user_id' in request.session:
+        del request.session['user_id']
     return redirect('/')
 
 

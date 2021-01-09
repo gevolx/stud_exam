@@ -68,7 +68,10 @@
             <h5>Вопрос: {{ forloop.counter }}/{{ test_info.question_count }}</h5>
             <h3>{{ q.question }}</h3>
             {% if q.image%}
-            <img src="{{ q.image.url }}" height="200">
+            <div>
+                <img src="{{ q.image.url }}" max-height="600pt" max-width="600pt">
+            </div>
+            
             {% endif %}
             <p></p>
 
