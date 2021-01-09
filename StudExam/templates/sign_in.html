@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+    <title> Вход в StudExam </title>
+    <link href="{% static 'css/sign_in.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="background">
+        <!-- ЛОГО с названием -->
+        <div class="grey_top"></div>
+        <span class="studexam">StudExam</span>
+        <div class="logo">
+            <div class="logo_1"></div>
+            <div class="logo_2"></div>
+            <div class="logo_3"></div>
+            <div class="logo_4"></div>
+            <div class="logo_5"></div>
+            <div class="logo_6"></div>
+        </div>
+        
+        <!-- Демонстация работы -->
+        <a href="http://www.google.com" target="_blank">
+            <input type="button" class="demo" value="Демонстрация работы с сервисом StudExam" />
+        </a>
+
+
+
+        <!-- Вход в систему -->
+
+        <input type="button" class="enter_system" value="Войти" data-toggle="modal" data-target="#popup_enter">
+
+
+
+    </div>
+
+    {% if form.errors %}
+       <div class="row justify-content-center">
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors%}
+                    <strong>{{ error }}</strong>
+                {% endfor %}
+            </div>
+      </div>
+    {% endif %}
+
+    <div>
+        <div>
+            <!-- HTML-код модального окна -->
+            <div class="modal fade" id="popup_enter">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <!-- Заголовок модального окна -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Вход в систему</h4>
+                        </div>
+                        <!-- Основное содержимое модального окна -->
+                        <div class="modal-body">
+                            <form name="enter" method="post" action="."> {% csrf_token %}
+                                <div class="container">
+{#                                    <label for="uname"><b>Логин</b></label>#}
+{#                                    <input type="text" placeholder="Введите логин" name="uname" required>#}
+{##}
+{#                                    <label for="psw"><b>Пароль</b></label>#}
+{#                                    <input type="password" placeholder="Введите пароль" name="pwd" required>#}
+{##}
+{#                                    <div class="row justify-content-center">#}
+{#                                        <button type="submit" class="sign_in_button">Войти</button>#}
+{#                                    </div>#}
+
+                                    {{ form }}
+                                    <div class="row justify-content-center">
+                                        <button type="submit" class="sign_in_button">Войти</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
