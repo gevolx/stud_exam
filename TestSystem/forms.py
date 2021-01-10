@@ -26,9 +26,9 @@ class UserLoginForm(forms.Form):
         password = self.cleaned_data.get('password')
         if username and password:
             qs = User.objects.filter(username=username)
-            check_user = SignUp_Model.objects.get(username=username)
             if not qs.exists():
                 raise forms.ValidationError('Такого пользователя не существует!')
+            check_user = SignUp_Model.objects.get(username=username)
             check_user.login_attempts += 1
             if check_user.login_attempts > 5:
                 check_user.locked = True
@@ -36,7 +36,7 @@ class UserLoginForm(forms.Form):
             if SignUp_Model.objects.get(username=username).locked:
                 raise forms.ValidationError('Пользователь заблокирован! Для разблокирования учетной\
                     записи обратитесь к администратору.')
-            if not check_password(password, qs[0].password): 
+            if not check_password(password, qs[0].password):
                 check_user.save()
                 raise forms.ValidationError('Неверный пароль!')
             user = authenticate(username=username, password=password)
@@ -44,9 +44,6 @@ class UserLoginForm(forms.Form):
             check_user.save()
             if not user:
                 raise forms.ValidationError('Данный пользователь неактивен!')
-
-            
-
         return super().clean(*args, *kwargs)
 
 
