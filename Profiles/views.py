@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.forms import Form
+from django.contrib.auth.decorators import login_required
 
 from WebTesting.models import StudTests, Attempts, StudAnswers
 from TestSystem.models import SignUp_Model
 from TestCreation.models import TeacherTests, Questions
 
+
+@login_required(login_url='/')
 def profile(request):
 
     ##################################################

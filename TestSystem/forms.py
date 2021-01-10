@@ -54,7 +54,7 @@ class SignUpForm(ModelForm):
     user_type = forms.ChoiceField(required=True, label="Тип учетной записи", widget=forms.RadioSelect(
         attrs={'class': 'Radio', 'name': 'user_type', 'onchange': 'checkParams()'}), 
         choices=(('stud','Студент'),('teacher','Преподаватель'),))
-    password = forms.CharField(label='', widget=forms.TextInput(attrs={'readonly': True, 'id': 'usr'}))
+    password = forms.CharField(label='', widget=forms.PasswordInput(attrs={'hidden': True, 'id': 'hidden_pwd'}))
     class Meta:
         model = SignUp_Model
         fields = ['full_name', 'user_type', 'username']

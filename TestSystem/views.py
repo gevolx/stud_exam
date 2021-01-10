@@ -1,10 +1,15 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.contrib.auth.hashers import check_password
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, Permission
+import re
+from django.contrib import messages
 
 
 from .forms import SignUpForm, ChangeForm, UserLoginForm
@@ -39,11 +44,14 @@ def logout_view(request):
         del request.session['attempt_id']
     return redirect('/')
 
+@login_required(login_url='/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/profile/')
 def admin_panel(request):
     if request.method == 'POST':
         ans = '0'
         form = SignUpForm(request.POST)
         form1 = ChangeForm(request.POST)
+        # Создание пользователя
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -51,8 +59,16 @@ def admin_panel(request):
             user = User.objects.create_user(username=username, password=raw_password)
             user.save()
 
+            if username.split('_')[0] == 'stud':
+                new_group, created = Group.objects.get_or_create(name='students')
+                user.groups.add(Group.objects.get(name='students'))
+            elif username.split('_')[0] == 'teacher':
+                new_group, created = Group.objects.get_or_create(name='teachers')
+                user.groups.add(Group.objects.get(name='teachers'))            
+
             return redirect('/admin_panel/')
 
+        # Редактирование пользователя
         elif request.POST.get('btn5'):
             username = request.POST.get('username')
             password = request.POST.get('password')
@@ -72,6 +88,7 @@ def admin_panel(request):
 
             return redirect('/admin_panel/')
         
+        # Удаление пользователя
         elif request.POST.get('btn4'):
             username = request.POST.get('username')
             SignUp_Model.objects.filter(username=username).delete()
@@ -79,8 +96,28 @@ def admin_panel(request):
             u.delete()
             return redirect('/admin_panel/')
 
+        elif request.POST.get('admin_pass'):
+            print('Here')
+            old_pwd = request.POST.get("admin_pwd")
+            new_pwd = request.POST.get("new_admin_pwd")
+            reg = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@№;%:?*()_+=]).{10,}$'
+            if re.match(reg, new_pwd) is not None:
+                qs = User.objects.get(username='admin')
+                if check_password(old_pwd, qs.password):
+                    qs.set_password(new_pwd)
+                    qs.save()
+                    messages.success(request, "Все хорошо")
+                else:
+                    error = "Старый пароль не совпадает с существующим!"
+                    messages.error(request, "Старый пароль не совпадает с существующим!")
+            else:
+                error = "Пароль не соответсвует требованиям!"
+                messages.error(request, "Пароль не соответсвует требованиям!")
+                
+            return render(request, 'admin_panel.html', {})
+
         else:
-            return forms.ValidationError("This isnt any name!")
+            return redirect('/admin_panel/')
 
     else:
         # ans - индекс новой записи для генерации логина
