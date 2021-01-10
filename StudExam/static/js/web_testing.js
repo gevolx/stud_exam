@@ -277,7 +277,8 @@ function save_questions() {
 
 function finish_button(e) {
     if (document.getElementById("timer").innerHTML == "EXPIRED"){
-        send_answers()
+        send_answers();
+        return 0;
     }
     else {
         page_count = parseInt(document.getElementById('quest_count').value)
@@ -287,23 +288,28 @@ function finish_button(e) {
                 if(!confirm('Не все ответы сохранены! Вы уверены в совершаемом действии?')){
                     //prevent sending the request when user clicked 'Cancel'
                     e.preventDefault();
-                    break
+                    return 0;
                 }
                 else {
-                    send_answers()
-                    break
+                    send_answers();
+                    return 0;
                 }
             }
         }
     }
-    send_answers()
+    send_answers();
 }
 
 function send_answers() {
-    var archive = [],
-        keys = Object.keys(sessionStorage),
-        i = 0, key;
-
+    keys = Object.keys(sessionStorage);
+    i = 0;
+    archive = [];
+    // if (sessionStorage) {
+    //    archive = [];
+    // }
+    // else {
+    //
+    // }
     for (; key = keys[i]; i++) {
         archive.push( key + '=' + sessionStorage.getItem(key));
     }

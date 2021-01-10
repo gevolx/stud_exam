@@ -28,8 +28,8 @@ def attempt_result(request):
         ##################################################
 
         query_test_info = TeacherTests.objects.get(id=request.session['test_id'])
-        query_questions = Questions.objects.filter(test_id_id=request.session['test_id']).all()
-        query_answers = StudAnswers.objects.filter(attempt_id=request.session['attempt_id']).all() 
+        query_questions = Questions.objects.filter(test_id_id=request.session['test_id']).all().order_by('id')
+        query_answers = StudAnswers.objects.filter(attempt_id=request.session['attempt_id']).all().order_by('question_id')
         query_attempt_info = Attempts.objects.get(id=request.session['attempt_id'])
         query_user = SignUp_Model.objects.get(pk=request.session['student'])
 
