@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load tz %}
 
 
 {% block head %}
@@ -31,7 +32,11 @@
     {% for attempt, res in attempts %}
     <tr>
         <td>{{ forloop.counter }}</td>
-        <td>{{ attempt.date }}</td>
+        <td>
+            {% timezone 'Europe/Moscow' %}
+            {{ attempt.date }}
+            {% endtimezone %}
+        </td>
         <td>{{ attempt.time }}</td>
         <td>{{ res }}%</td>
         <td style="border: none;">

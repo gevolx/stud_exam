@@ -234,31 +234,6 @@ document.onreadystatechange = function () {
         }, 500);
     }
 }
-function timer_func(deadline) {
-
-    // Update the count down every 1 second
-    var x = setInterval(function () {
-
-
-        // Find the distance between now an the count down date
-        var distance = deadline * 60;
-
-        // Time calculations for days, hours, minutes and seconds
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        // Display the result in the element with id="demo"
-        document.getElementById("timer").innerHTML = hours + "h "
-            + minutes + "m " + seconds + "s ";
-
-        // If the count down is finished, write some text
-        if (distance < 0) {
-            clearInterval(x);
-            document.getElementById("timer").innerHTML = "EXPIRED";
-        }
-    }, 1000);
-}
 
 function save_questions() {
     active_page = $('.search:visible').attr('id');
@@ -301,18 +276,23 @@ function save_questions() {
 }
 
 function finish_button(e) {
-    page_count = parseInt(document.getElementById('quest_count').value)
-    for (i=1; i <= page_count; i++) {
-        checked_el = document.getElementById(i + '_label').style.border
-        if (!checked_el) {
-            if(!confirm('Не все ответы сохранены! Вы уверены?')){
-                //prevent sending the request when user clicked 'Cancel'
-                e.preventDefault();
-                break
-            }
-            else {
-                send_answers()
-                break
+    if (document.getElementById("timer").innerHTML == "EXPIRED"){
+        send_answers()
+    }
+    else {
+        page_count = parseInt(document.getElementById('quest_count').value)
+        for (i=1; i <= page_count; i++) {
+            checked_el = document.getElementById(i + '_label').style.border
+            if (!checked_el) {
+                if(!confirm('Не все ответы сохранены! Вы уверены в совершаемом действии?')){
+                    //prevent sending the request when user clicked 'Cancel'
+                    e.preventDefault();
+                    break
+                }
+                else {
+                    send_answers()
+                    break
+                }
             }
         }
     }

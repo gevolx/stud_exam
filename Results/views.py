@@ -66,7 +66,8 @@ def student_result(request):
     # request.session['attempt_id'] = '1'
     ##################################################
 
-    test = StudTests.objects.get(test_id=request.session['test_id'])
+    # test = StudTests.objects.get(test_id=request.session['test_id'])
+    test = StudTests.objects.filter(test_id=request.session['test_id'], user_id=request.session['student']).first()
     request.session['passed_test_id'] = test.id
     query_test_info = TeacherTests.objects.get(id=request.session['test_id'])
     # query_questions = Questions.objects.filter(test_id_id=request.session['test_id']).all()

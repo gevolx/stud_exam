@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load tz %}
 
 
 {% block head %}
@@ -25,7 +26,10 @@
             Номер попытки:<br>{{attempt_info.attempt_number }}
         </td>
         <td>
-            Дата прохождения:<br>{{ attempt_info.date }}
+            Дата прохождения:<br>
+            {% timezone 'Europe/Moscow' %}
+            {{ attempt_info.date }}
+            {% endtimezone %}
         </td>
         <td>
             Затраченное время:<br>{{ attempt_info.time }} мин

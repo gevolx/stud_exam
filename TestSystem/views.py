@@ -10,17 +10,6 @@ from django.contrib.auth.models import User
 from .forms import SignUpForm, ChangeForm, UserLoginForm
 from .models import SignUp_Model
 
-# def login_view(request):
-#     form = UserLoginForm(request.POST or None)
-#     if form.is_valid():
-#         username = form.cleaned_data.get('username')
-#         password = form.cleaned_data.get('password')
-#         user = authenticate(username=username, password=password)
-#         login(request, user)
-#     return render(request, 'sign_in.html', {'form': form})
-
-
-# Заглавная страница, надо что-то сюда вставить
 def index(request):
     form = UserLoginForm(request.POST or None)
     _next = request.GET.get('next')
@@ -28,38 +17,27 @@ def index(request):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
         user = authenticate(username=username, password=password)
-        login(request, user)
+        login(request, user)            
         request.session['user_id'] = user.id
-        print(request.session['user_id'])
+
         _next = _next or '/'
+        if request.user.is_superuser:
+            return redirect('/admin_panel/')
         return redirect('/profile/')
-        # if SignUp_Model.objects.get(username=username).user_type == 'teacher':
-        #     return redirect('/create_test/')
-        # else:
-        #     return render(request, 'sign_in.html', {'form': form})
+
     return render(request, 'sign_in.html', {'form': form})
-   #return render(request, 'sign_in.html', {})
 
 def logout_view(request):
     logout(request)
     if 'user_id' in request.session:
         del request.session['user_id']
+    if 'test_id' in request.session:
+        del request.session['test_id']
+    if 'passed_test_id' in request.session:
+        del request.session['passed_test_id']
+    if 'attempt_id'  in request.session:
+        del request.session['attempt_id']
     return redirect('/')
-
-
-def sign_in(request):
-    # form = UserLoginForm(request.POST or None)
-    # if form.is_valid():
-    #     username = form.cleaned_data.get('username')
-    #     password = form.cleaned_data.get('password')
-    #     user = authenticate(username=username, password=password)
-    #     login(request, user)
-    # return render(request, 'sign_in.html', {'form': form})
-    #return render(request, 'sign_in.html', {})
-    pass
-
-
-
 
 def admin_panel(request):
     if request.method == 'POST':
@@ -79,17 +57,18 @@ def admin_panel(request):
             username = request.POST.get('username')
             password = request.POST.get('password')
             status = request.POST.get('choose_user')
-            print(status)
             status = not(eval(status.split('+')[0]))
-            print(status)
             u = User.objects.get(username=username)
+            changed_user = SignUp_Model.objects.get(username=username)
             if password != '':
                 u.set_password(password)           
-                SignUp_Model.objects.filter(username=username).update(password=password)
-            SignUp_Model.objects.filter(username=username).update(locked=status)
-            SignUp_Model.objects.filter(username=username).update(login_attempts=0)
-            SignUp_Model.save
-            u.save
+                # changed_user.password = password
+            if changed_user.locked != status:
+                changed_user.locked=status
+                if not status:
+                    changed_user.login_attempts=0
+            changed_user.save()
+            u.save()
 
             return redirect('/admin_panel/')
         
@@ -110,7 +89,7 @@ def admin_panel(request):
             ans = str(int(ans) + 1)
         else:
             ans = 1
-        options = SignUp_Model.objects.order_by('username').all()
+        options = SignUp_Model.objects.order_by('username').exclude(username='admin')
         form = SignUpForm()
         form1 = ChangeForm()
     return render(request, 'admin_panel.html', {

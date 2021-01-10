@@ -54,20 +54,33 @@ def profile(request):
         if request.method == 'POST':
             if request.POST.get('test'):
                 test_id = int(request.POST.get("test_id"))
+                if not TeacherTests.objects.filter(pk=test_id).exists():
+                    query_user = SignUp_Model.objects.get(pk=request.session['user_id'])
+                    query_tests = StudTests.objects.filter(user_id=request.session['user_id'], attempts_count__gt=0)
+                    test_info = []
+                    attempt_info = []
+                    for test in query_tests:
+                        test_info.append(TeacherTests.objects.get(pk=test.test_id))
+                        attempt_info.append(Attempts.objects.filter(passed_test_id=test.id).order_by('date').last())
+                    return render(request, 'stud_profile.html', {
+                        'error': "Нет такого теста!",
+                        'reg_user': query_user, # Инфа о студенте
+                        'tests': zip(query_tests, test_info, attempt_info), # Инфа о тестах студента
+                        })
                 test_attempts = TeacherTests.objects.get(pk=test_id).attempt_count
-                passed_test = StudTests.objects.filter(test_id=test_id).first()
-                if passed_test is None:
+                # passed_test = StudTests.objects.filter(test_id=test_id, user_id=request.session['user_id']).first()
+                if not StudTests.objects.filter(test_id=test_id, user_id=request.session['user_id']).exists():
                     new_test = StudTests()
                     new_test.test_id = test_id
                     new_test.user_id = request.session['user_id']
                     new_test.save()
-                    passed_test = StudTests.objects.filter(test_id=test_id).first()
+                passed_test = StudTests.objects.filter(test_id=test_id, user_id=request.session['user_id']).first()
                 
                 if passed_test.attempts_count >= test_attempts:
                     error = "Все попытки исчерпаны" # Сделать вывод ошибок!
 
                     query_user = SignUp_Model.objects.get(pk=request.session['user_id'])
-                    query_tests = StudTests.objects.filter(user_id=request.session['user_id'])
+                    query_tests = StudTests.objects.filter(user_id=request.session['user_id'], attempts_count__gt=0)
                     test_info = []
                     attempt_info = []
                     for test in query_tests:
@@ -93,6 +106,21 @@ def profile(request):
                         request.session['passed_test_id'] = passed_test.id
                         request.session['attempt_id'] = new_attempt.id
                         return redirect('/web_testing/')
+                    else:
+                        error = "Завершите предыдущий тест!!!" # Сделать вывод ошибок!
+                        query_user = SignUp_Model.objects.get(pk=request.session['user_id'])
+                        query_tests = StudTests.objects.filter(user_id=request.session['user_id'], attempts_count__gt=0)
+                        test_info = []
+                        attempt_info = []
+                        for test in query_tests:
+                            test_info.append(TeacherTests.objects.get(pk=test.test_id))
+                            attempt_info.append(Attempts.objects.filter(passed_test_id=test.id).order_by('date').last())
+
+                        return render(request, 'stud_profile.html', {
+                            'reg_user': query_user, # Инфа о студенте
+                            'tests': zip(query_tests, test_info, attempt_info), # Инфа о тестах студента
+                            'error': error,
+                        })
 
             if request.POST.get("action", "") == "info":
                 request.session['test_id'] = request.POST.get("more_info")
@@ -100,7 +128,7 @@ def profile(request):
                 return redirect('/student_result/')
 
         query_user = SignUp_Model.objects.get(pk=request.session['user_id'])
-        query_tests = StudTests.objects.filter(user_id=request.session['user_id'])
+        query_tests = StudTests.objects.filter(user_id=request.session['user_id'], attempts_count__gt=0)
         test_info = []
         attempt_info = []
         for test in query_tests:

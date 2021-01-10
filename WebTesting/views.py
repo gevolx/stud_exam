@@ -16,8 +16,8 @@ def web_testing(request):
     ##################################################
 
     query_test_info = TeacherTests.objects.get(id=request.session['test_id'])
-    student = StudTests.objects.get(test_id=request.session['test_id'])
-    show_attempt = query_test_info.attempt_count - student.attempts_count
+    student = StudTests.objects.filter(test_id=request.session['test_id'], user_id=request.session['user_id']).first()
+    show_attempt = query_test_info.attempt_count - student.attempts_count + 1
     print(show_attempt)
     query_questions = Questions.objects.filter(test_id_id=request.session['test_id']).all().order_by('?')
    
@@ -33,7 +33,7 @@ def web_testing(request):
             timer = request.POST.get("finish_time", None)
             answers = {}
             right_ans_counter = 0
-            if read_answers != None:
+            if read_answers != None and read_answers != '':
                 read_answers = read_answers.split(',')
                 for i in read_answers:
                     quest_num, ans = i.split('=')
@@ -85,10 +85,10 @@ def web_testing(request):
             if timer != "EXPIRED":
                 attempts.time = query_test_info.time - int(timer.split(':')[2])
             else:
-                attempts.time = 0
+                attempts.time = query_test_info.time
             attempts.result = right_ans_counter
             attempts.save()
-            update_best = StudTests.objects.get(pk=request.session['passed_test_id'])
+            update_best = StudTests.objects.filter(pk=request.session['passed_test_id']).first()
             update_best.best_result = max(update_best.best_result, (right_ans_counter / test.question_count * 100))
             update_best.save()
             del request.session['test_id']

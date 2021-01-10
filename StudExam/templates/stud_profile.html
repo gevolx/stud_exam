@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load tz %}
 
 
 {% block head %}
@@ -35,9 +36,9 @@
             тестирование</button>
     </div>
 </form>
-
+<!-- 
 <p>{{ reg_user.username }}</p>
-<p>{{ reg_user.full_name }}</p>
+<p>{{ reg_user.full_name }}</p> -->
 
 <h4 style="text-align: center;">Перечень пройденных тестов</h4>
 <p style="margin: 20pt;"></p>
@@ -57,9 +58,13 @@
     <tr>
         <td>{{ forloop.counter }}</td>
         <td>{{ test.test_id }}</td>
-        <td>{{ attempt.date }}</td>
+        <td>
+            {% timezone 'Europe/Moscow' %}
+            {{ attempt.date }}
+            {% endtimezone %}
+        </td>
         <td>{{ test_info.test_name }}</td>
-        <td>{{ test.best_result }}</td>
+        <td>{{ test.best_result }}%</td>
         <td>{{ test.attempts_count }}/{{test_info.attempt_count}}</td>
         <td style="border: none;">
             <form action="." method="post">

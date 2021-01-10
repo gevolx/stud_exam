@@ -26,7 +26,7 @@ from Profiles import views as views4
 
 urlpatterns = [
     path('', views.index, name='home'),
-    path('sign_in/', views.sign_in, name='sign_in'),
+    # path('sign_in/', views.sign_in, name='sign_in'),
     path('logout/', views.logout_view, name='logout'),
     path('create_test/', views1.create_test, name='create_test'),
     path('web_testing/', views2.web_testing, name='web_testing'),
