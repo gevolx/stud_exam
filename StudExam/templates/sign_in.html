@@ -29,7 +29,7 @@
         <!-- ЛОГО с названием -->
         <div class="grey_top"></div>
         <span class="studexam">StudExam</span>
-        <div class="logo">
+        <div class="logo" style="background: rgb(246 246 246);">
             <div class="logo_1"></div>
             <div class="logo_2"></div>
             <div class="logo_3"></div>
@@ -39,16 +39,14 @@
         </div>
         
         <!-- Демонстация работы -->
-        <a href="http://www.google.com" target="_blank">
-            <input type="button" class="demo" value="Демонстрация работы с сервисом StudExam" />
+        <a href="demo" target="_blank">
+            <input type="button" class="demo" value="Демонстрация работы сервиса StudExam" />
         </a>
 
 
 
         <!-- Вход в систему -->
-
-        <input type="button" class="enter_system" value="Войти" data-toggle="modal" data-target="#popup_enter">
-
+        <input type="button" style="color: white; font: bold;" class="enter_system" value="Войти" data-toggle="modal" data-target="#popup_enter">
 
 
     </div>
@@ -76,20 +74,10 @@
                         <!-- Основное содержимое модального окна -->
                         <div class="modal-body">
                             <form name="enter" method="post" action="."> {% csrf_token %}
-                                <div class="container">
-{#                                    <label for="uname"><b>Логин</b></label>#}
-{#                                    <input type="text" placeholder="Введите логин" name="uname" required>#}
-{##}
-{#                                    <label for="psw"><b>Пароль</b></label>#}
-{#                                    <input type="password" placeholder="Введите пароль" name="pwd" required>#}
-{##}
-{#                                    <div class="row justify-content-center">#}
-{#                                        <button type="submit" class="sign_in_button">Войти</button>#}
-{#                                    </div>#}
-
+                                <div class="container" style="font-weight: bold;">
                                     {{ form }}
                                     <div class="row justify-content-center">
-                                        <button type="submit" class="sign_in_button">Войти</button>
+                                        <button type="submit" class="sign_in_button" style="color: white;">Войти</button>
                                     </div>
                                 </div>
                             </form>

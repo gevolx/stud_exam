@@ -22,7 +22,6 @@ def web_testing(request):
     query_test_info = TeacherTests.objects.get(id=request.session['test_id'])
     student = StudTests.objects.filter(test_id=request.session['test_id'], user_id=request.session['user_id']).first()
     show_attempt = query_test_info.attempt_count - student.attempts_count + 1
-    #print(show_attempt)
     query_questions = Questions.objects.filter(test_id_id=request.session['test_id']).all().order_by('?')
 
     if request.method == 'POST':
@@ -59,14 +58,6 @@ def web_testing(request):
                                 if anses[2] == q.isright3:
                                     if anses[3] == q.isright4:
                                         correct = True
-                        # if not (anses[0] == '1' and q.isright1) or (anses[0] == '0' and not q.isright1):
-                        #     correct = False
-                        # if not (anses[1] == '1' and q.isright2) or (anses[1] == '0' and not q.isright2):
-                        #     correct = False
-                        # if not (anses[2] == '1' and q.isright3) or (anses[2] == '0' and not q.isright3):
-                        #     correct = False
-                        # if not (anses[3] == '1' and q.isright4) or (anses[3] == '0' and not q.isright4):
-                        #     correct = False
                         stud.iscorrect = correct
                         right_ans_counter += 1 if correct else 0
                         stud.choosen_answer1 = anses[0]
@@ -112,8 +103,3 @@ def web_testing(request):
             'item': query_test_info,
             'student': show_attempt,
             })
-
-    # except Exception as e:
-    #     print('ОШИБКА')
-    #     print(e)
-    #     return redirect('/profile/')

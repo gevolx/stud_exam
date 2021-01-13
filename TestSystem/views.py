@@ -15,6 +15,9 @@ from django.contrib import messages
 from .forms import SignUpForm, ChangeForm, UserLoginForm
 from .models import SignUp_Model
 
+def demo(request):
+    return render(request, 'demo.html')
+
 def index(request):
     form = UserLoginForm(request.POST or None)
     _next = request.GET.get('next')
@@ -97,23 +100,24 @@ def admin_panel(request):
             return redirect('/admin_panel/')
 
         elif request.POST.get('admin_pass'):
-            print('Here')
             old_pwd = request.POST.get("admin_pwd")
             new_pwd = request.POST.get("new_admin_pwd")
             reg = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@№;%:?*()_+=]).{10,}$'
-            if re.match(reg, new_pwd) is not None:
-                qs = User.objects.get(username='admin')
-                if check_password(old_pwd, qs.password):
+            qs = User.objects.get(username='admin')
+            if check_password(old_pwd, qs.password):
+                if re.match(reg, new_pwd) is not None:
                     qs.set_password(new_pwd)
                     qs.save()
-                    messages.success(request, "Все хорошо")
+                    messages.success(request, "Пароль изменён успешно!")
                 else:
-                    error = "Старый пароль не совпадает с существующим!"
-                    messages.error(request, "Старый пароль не совпадает с существующим!")
+                    error = "Пароль не соответсвует требованиям!"
+                    messages.error(request, "Пароль не соответсвует требованиям!")
             else:
-                error = "Пароль не соответсвует требованиям!"
-                messages.error(request, "Пароль не соответсвует требованиям!")
-                
+                error = "Старый пароль не совпадает с существующим!"
+                messages.error(request, "Старый пароль не совпадает с существующим!")
+
+
+
             return render(request, 'admin_panel.html', {})
 
         else:
