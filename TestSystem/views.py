@@ -27,7 +27,6 @@ def index(request):
         user = authenticate(username=username, password=password)
         login(request, user)            
         request.session['user_id'] = user.id
-
         _next = _next or '/'
         if request.user.is_superuser:
             return redirect('/admin_panel/')
@@ -76,7 +75,9 @@ def admin_panel(request):
             username = request.POST.get('username')
             password = request.POST.get('password')
             status = request.POST.get('choose_user')
-            status = not(eval(status.split('+')[0]))
+            print(f'До {status}')
+            status = eval(status.split('+')[0])
+            print(f'После {status}')
             u = User.objects.get(username=username)
             changed_user = SignUp_Model.objects.get(username=username)
             if password != '':

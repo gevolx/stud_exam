@@ -70,6 +70,21 @@ def profile(request):
                         'reg_user': query_user, # Инфа о студенте
                         'tests': zip(query_tests, test_info, attempt_info), # Инфа о тестах студента
                         })
+                elif TeacherTests.objects.get(pk=test_id).question_count == 0:
+                    query_user = SignUp_Model.objects.get(pk=request.session['user_id'])
+                    query_tests = StudTests.objects.filter(user_id=request.session['user_id'], attempts_count__gt=0)
+                    test_info = []
+                    attempt_info = []
+                    for test in query_tests:
+                        test_info.append(TeacherTests.objects.get(pk=test.test_id))
+                        attempt_info.append(Attempts.objects.filter(passed_test_id=test.id).order_by('date').last())
+                    if 'attempt_id' in request.session:
+                        del request.session['attempt_id']
+                    return render(request, 'stud_profile.html', {
+                        'error': "Вам повезло! В тесте нет вопросов!",
+                        'reg_user': query_user,  # Инфа о студенте
+                        'tests': zip(query_tests, test_info, attempt_info),  # Инфа о тестах студента
+                    })
                 test_attempts = TeacherTests.objects.get(pk=test_id).attempt_count
                 # passed_test = StudTests.objects.filter(test_id=test_id, user_id=request.session['user_id']).first()
                 if not StudTests.objects.filter(test_id=test_id, user_id=request.session['user_id']).exists():
