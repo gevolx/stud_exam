@@ -113,7 +113,7 @@ function SwitchChange(choosen_value) {
         $('#btn4').attr('disabled', 'disabled');
         $('#btn5').attr('disabled', 'disabled');
         $('#stackedCheck1').bootstrapToggle('off');
-        $('#stackedCheck1').attr('disabled', 'disabled');       
+        $('#stackedCheck1').attr('disabled', 'disabled');
     }
     else { 
         $('#btn3').removeAttr('disabled');
@@ -127,12 +127,27 @@ function SwitchChange(choosen_value) {
     }
     if (status == "False") {
         $('#stackedCheck1').bootstrapToggle('on');
-    } 
+    }
+
+
+    if (status == 'True') {
+        document.getElementById('status_change').value = false
+    }
+    else {
+        document.getElementById('status_change').value = true
+    }
+
 }
 
 function DeleteConfirm(e) {
-    if(!confirm('Вы уверены, что хотите удалить пользователя?')){
+    if(!confirm('Вы уверены, что хотите удалить пользователя?')) {
         //prevent sending the request when user clicked 'Cancel'
         e.preventDefault();
     }
+}
+
+function changed_status() {
+    document.getElementById('status_change').value = $('#stackedCheck1').prop('checked')
+    // $('input[name="user_type"]').is(':checked')
+    // document.getElementById('status_change').value = status
 }

@@ -152,9 +152,9 @@
                         <div class="form-check pl-0">
                             <label for="stackedCheck1" class="form-check-label">Состояние учётной записи</label>
                             <input id="stackedCheck1" class="form-check-input" type="checkbox" disabled
-                                data-toggle="toggle" data-on="Разблокирован" data-off="Заблокирован" data-width="255">
+                                data-toggle="toggle" data-on="Разблокирован" data-off="Заблокирован" data-width="255" onchange="changed_status()">
                         </div>
-
+                        <input type="hidden" id="status_change" name="status_change">
                     </div>
                     <!-- Футер модального окна -->
                     <div class="modal-footer">

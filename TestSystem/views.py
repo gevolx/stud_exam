@@ -74,17 +74,15 @@ def admin_panel(request):
         elif request.POST.get('btn5'):
             username = request.POST.get('username')
             password = request.POST.get('password')
-            status = request.POST.get('choose_user')
-            print(f'До {status}')
-            status = eval(status.split('+')[0])
-            print(f'После {status}')
+            status = request.POST.get('status_change')
+            print(status, type(status))
+            status = not(eval(status.capitalize()))
             u = User.objects.get(username=username)
             changed_user = SignUp_Model.objects.get(username=username)
             if password != '':
-                u.set_password(password)           
-                # changed_user.password = password
+                u.set_password(password)
             if changed_user.locked != status:
-                changed_user.locked=status
+                changed_user.locked = status
                 if not status:
                     changed_user.login_attempts=0
             changed_user.save()
