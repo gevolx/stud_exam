@@ -21,7 +21,7 @@ DB_USER = os.environ.get('DB_USER')
 #SECRET_KEY = os.environ.get('SECRET_KEY')
 import sys
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.static',
 
     # My Apps
     'TestSystem', # Подсистема регистрации и аутентификации
@@ -71,7 +71,7 @@ ROOT_URLCONF = 'StudExam.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),],
+        'DIRS': [BASE_DIR.joinpath('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -146,14 +146,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(os.path.dirname(__file__), "static").replace('\\','/'),
+    BASE_DIR.joinpath('static'),
 ]
 
 # Основной url для управления медиафайлами
 MEDIA_URL = '/media/'
 
 # Путь хранения картинок
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media').replace('\\','/')
+MEDIA_ROOT = BASE_DIR.joinpath('media')
 
 try:
     from django.contrib.messages import constants as messages
@@ -167,4 +167,4 @@ try:
 except Exception as e:
     pass
 
-STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
+STATIC_ROOT = BASE_DIR.joinpath('statifiles')
