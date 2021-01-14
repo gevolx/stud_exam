@@ -168,3 +168,4 @@ except Exception as e:
     pass
 
 STATIC_ROOT = BASE_DIR.joinpath('statifiles')
+MEDIAFILES_DIRS = (MEDIA_ROOT)
