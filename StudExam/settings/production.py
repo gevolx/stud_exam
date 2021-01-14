@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.statifiles',
+    'django.contrib.staticfiles',
 
     # My Apps
     'TestSystem', # Подсистема регистрации и аутентификации
