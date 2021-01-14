@@ -91,6 +91,7 @@ ENV/
 # Spyder project settings
 .spyderproject
 .spyproject
+.env
 
 # Rope project settings
 .ropeproject
@@ -114,3 +115,5 @@ media/
 # **/migrations/**
 # !**/migrations
 # !**/migrations/__init__.py
+
+local_settings.py
